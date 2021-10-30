@@ -26,13 +26,13 @@ public class ProductEntity {
     @Id
     @Column(name = "id")
     private String id;
-
+    
+    @NotNull
     @Column(name = "name")
-    @NotNull
     private String name;
-
-    @Column(name = "price")
+    
     @NotNull
+    @Column(name = "price")
     private Integer price;
 
     // ...
