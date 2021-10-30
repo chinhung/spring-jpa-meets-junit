@@ -3,6 +3,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name="products")
@@ -13,9 +14,11 @@ public class ProductEntity {
     private String id;
 
     @Column(name="name")
+    @NotNull
     private String name;
 
     @Column(name="price")
+    @NotNull
     private Integer price;
 
     public String getId() {
