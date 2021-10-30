@@ -86,11 +86,6 @@ public class ProductRepositoryTest {
     // ...
 
     @Test
-    public void injectedComponentsAreNotNull() {
-        assertNotNull(productRepository);
-    }
-
-    @Test
     public void findById() {
         assertTrue(productRepository.findById("1").isPresent());
     }
