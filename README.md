@@ -4,6 +4,10 @@
 
 This is a demo repository for validating the Spring JPA configurations via JUnit.
 
+## Introduction
+
+With the help of `@DataJpaTest` annotation, we could initialize the repository objects in the JUnit test cases. Validating the behavior of repository objects such as the CRUD operations and the database constrains becomes much easier.
+
 ## Run Tests
 ```
 ./gradlew test
@@ -12,6 +16,8 @@ This is a demo repository for validating the Spring JPA configurations via JUnit
 ## Example
 
 ### Product Entity
+
+Use the validation annotation `@NotNull` to declare the NOT NULL constraint.
 ```java
 @Entity
 @Table(name="products")
@@ -44,6 +50,7 @@ public interface ProductRepository extends CrudRepository<ProductEntity, String>
 
 ## Testing Setup 
 
+The annotation `@DataJpaTest` is required to inject the ProductRepository by Spring with `@Autowired` annotation. The test data is initialized by the `setUp` method before each test case with the annotation `@BeforeEach`. By default, `@DataJpaTest` annotated test cases are transactional and will roll back at the end of each test case.
 ```java
 @DataJpaTest
 public class ProductRepositoryTest {
