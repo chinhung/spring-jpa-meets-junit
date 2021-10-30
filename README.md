@@ -17,7 +17,7 @@ With the help of `@DataJpaTest` annotation, we could initialize the repository o
 
 ### Product Entity
 
-Use the validation annotation `@NotNull` to declare the NOT NULL constraint.
+Use the validation annotation `@NotNull` to validate the field by hibernate validator. Use `@Column(nullable = false)` to generate the NOT NULL constraint in DDL.
 ```java
 @Entity
 @Table(name="products")
@@ -26,13 +26,13 @@ public class ProductEntity {
     @Id
     @Column(name = "id")
     private String id;
-    
+
     @NotNull
-    @Column(name = "name")
+    @Column(name="name", nullable = false)
     private String name;
-    
+
     @NotNull
-    @Column(name = "price")
+    @Column(name="price", nullable = false)
     private Integer price;
 
     // ...
@@ -50,6 +50,18 @@ public interface ProductRepository extends CrudRepository<ProductEntity, String>
 
 ## Testing Setup 
 
+### Enable Automatically Validation Before Database Operations
+
+Add the following three dependencies to `build.gradle`:
+```groovy
+dependencies {
+    implementation 'org.hibernate.validator:hibernate-validator:7.0.1.Final'
+    implementation 'org.hibernate.validator:hibernate-validator-cdi:7.0.1.Final'
+    implementation 'org.glassfish:jakarta.el:4.0.0'
+}
+```
+
+### Test Cases Setup
 The annotation `@DataJpaTest` is required to inject the ProductRepository by Spring with `@Autowired` annotation. The test data is initialized by the `setUp` method before each test case with the annotation `@BeforeEach`. By default, `@DataJpaTest` annotated test cases are transactional and will roll back at the end of each test case.
 ```java
 @DataJpaTest
@@ -108,6 +120,34 @@ public class ProductRepositoryTest {
         productRepository.save(iPod);
 
         assertTrue(productRepository.findById("4").isPresent());
+    }
+
+    @Test
+    public void saveFail_NameNull() {
+        assertFalse(productRepository.findById("4").isPresent());
+
+        ProductEntity iPod = new ProductEntity();
+        iPod.setId("4");
+        iPod.setName(null);
+        iPod.setPrice(7000);
+
+        assertThrows(DataIntegrityViolationException.class, () -> {
+            productRepository.save(iPod);
+        });
+    }
+
+    @Test
+    public void saveFail_PriceNull() {
+        assertFalse(productRepository.findById("4").isPresent());
+
+        ProductEntity iPod = new ProductEntity();
+        iPod.setId("4");
+        iPod.setName("iPod");
+        iPod.setPrice(null);
+
+        assertThrows(DataIntegrityViolationException.class, () -> {
+            productRepository.save(iPod);
+        });
     }
 
     @Test

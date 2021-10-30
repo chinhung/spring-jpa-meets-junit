@@ -4,6 +4,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.dao.DataIntegrityViolationException;
+
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -51,6 +54,34 @@ public class ProductRepositoryTest {
         productRepository.save(iPod);
 
         assertTrue(productRepository.findById("4").isPresent());
+    }
+
+    @Test
+    public void saveFail_NameNull() {
+        assertFalse(productRepository.findById("4").isPresent());
+
+        ProductEntity iPod = new ProductEntity();
+        iPod.setId("4");
+        iPod.setName(null);
+        iPod.setPrice(7000);
+
+        assertThrows(DataIntegrityViolationException.class, () -> {
+            productRepository.save(iPod);
+        });
+    }
+
+    @Test
+    public void saveFail_PriceNull() {
+        assertFalse(productRepository.findById("4").isPresent());
+
+        ProductEntity iPod = new ProductEntity();
+        iPod.setId("4");
+        iPod.setName("iPod");
+        iPod.setPrice(null);
+
+        assertThrows(DataIntegrityViolationException.class, () -> {
+            productRepository.save(iPod);
+        });
     }
 
     @Test

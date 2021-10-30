@@ -14,11 +14,11 @@ public class ProductEntity {
     private String id;
 
     @NotNull
-    @Column(name="name")
+    @Column(name="name", nullable = false)
     private String name;
 
     @NotNull
-    @Column(name="price")
+    @Column(name="price", nullable = false)
     private Integer price;
 
     public String getId() {
